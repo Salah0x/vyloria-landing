@@ -802,10 +802,10 @@
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
       padding: 40px;
-      max-width: 440px;
       width: 100%;
-      margin-bottom: 32px;
       position: relative;
+      display: flex;
+      flex-direction: column;
     }
 
     .pricing-card::before {
@@ -816,6 +816,49 @@
       right: 0;
       height: 1px;
       background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    }
+
+    .pricing-card.featured {
+      border-color: var(--accent);
+      box-shadow: 0 0 40px var(--accent-glow);
+    }
+
+    .pricing-card.featured::before {
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent-light), var(--accent), var(--accent-light), transparent);
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin: 56px 0 32px;
+      align-items: stretch;
+    }
+
+    @media (max-width: 900px) {
+      .pricing-grid {
+        grid-template-columns: 1fr;
+        max-width: 440px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+    }
+
+    .pricing-badge {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 5px 16px;
+      border-radius: 100px;
+      white-space: nowrap;
     }
 
     .pricing-label {
@@ -1258,32 +1301,92 @@
       <div class="cta-content">
         <div class="section-label" style="margin-bottom:24px;">Réserver</div>
         <h2>Prêt à arrêter de perdre des conversions ?</h2>
-        <p>Sprint pilote à 290€. 3 places disponibles en juillet. Acompte de 145€, solde à la livraison. Livraison en 5 jours ouvrés.</p>
+        <p>3 offres adaptées à votre niveau d'engagement. Pilote one-shot, monitoring continu, ou bundle économie. 3 places disponibles en juillet.</p>
 
-        <div class="pricing-card">
-          <div class="pricing-label">Offre pilote — Juillet 2026</div>
-          <div class="pricing-price">
-            <span class="amount">290</span>
-            <span class="currency">€</span>
+        <div class="pricing-grid">
+
+          <!-- Offre 1 : Pilote One-Shot -->
+          <div class="pricing-card">
+            <div class="pricing-label">Offre pilote — Juillet 2026</div>
+            <div class="pricing-price">
+              <span class="amount">290</span>
+              <span class="currency">€</span>
+            </div>
+            <div class="pricing-old">Tarif normal : 590€</div>
+
+            <ul class="pricing-includes">
+              <li>Audit mobile CRO complet</li>
+              <li>Correctifs techniques (alt, Schema, CTA)</li>
+              <li>Rapport before/after avec métriques</li>
+              <li>Plan d'actions 30 jours</li>
+              <li>Livraison en 5 jours ouvrés</li>
+            </ul>
+
+            <a href="mailto:vyloria.business@gmail.com?subject=Pilote%20CRO%20%E2%80%94%20R%C3%A9servation&body=Bonjour,%0A%0AJe%20souhaite%20r%C3%A9server%20le%20pilote%20one-shot%20%C3%A0%20290%E2%82%AC.%0A%0AMa%20boutique%20Shopify%20:%20%0AMon%20trafic%20mensuel%20:%20%0A%0AMerci." class="btn btn-primary" style="width:100%; justify-content:center; margin-top:auto;">
+              Réserver — 145€ d'acompte
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+
+            <div class="pricing-deposit">
+              Acompte 145€ · Solde 145€ à la livraison · Satisfaction ou remboursé
+            </div>
           </div>
-          <div class="pricing-old">Tarif normal : 590€</div>
 
-          <ul class="pricing-includes">
-            <li>Audit mobile CRO complet</li>
-            <li>Correctifs techniques (alt, Schema, CTA ruptures)</li>
-            <li>Rapport before/after avec métriques</li>
-            <li>Plan d'actions 30 jours</li>
-            <li>Livraison en 5 jours ouvrés</li>
-          </ul>
+          <!-- Offre 2 : Monitoring CRO Mensuel -->
+          <div class="pricing-card">
+            <div class="pricing-label">Monitoring CRO</div>
+            <div class="pricing-price">
+              <span class="amount">49</span>
+              <span class="currency">€/mois</span>
+            </div>
+            <div class="pricing-old">1<sup>er</sup> mois gratuit</div>
 
-          <a href="mailto:vyloria.business@gmail.com?subject=Sprint%20Conversion%20CRO%20%E2%80%94%20R%C3%A9servation&body=Bonjour,%0A%0AJe%20souhaite%20r%C3%A9server%20une%20place%20pilote%20pour%20le%20Sprint%20Conversion%20CRO.%0A%0AMa%20boutique%20Shopify%20:%20%0AMon%20trafic%20mensuel%20:%20%0A%0AMerci." class="btn btn-primary" style="width:100%; justify-content:center;">
-            Réserver — 145€ d'acompte
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-          </a>
+            <ul class="pricing-includes">
+              <li>Monitoring continu des conversions</li>
+              <li>1 test A/B prioritaire par mois</li>
+              <li>Optimisations techniques mensuelles</li>
+              <li>Reporting mensuel avec métriques</li>
+              <li>Support prioritaire par email</li>
+            </ul>
 
-          <div class="pricing-deposit">
-            Acompte 145€ à la réservation · Solde 145€ à la livraison · Garantie satisfait ou remboursé
+            <a href="mailto:vyloria.business@gmail.com?subject=Monitoring%20CRO%20Mensuel&body=Bonjour,%0A%0AJe%20souhaite%20souscrire%20au%20monitoring%20CRO%20mensuel%20%C3%A0%2049%E2%82%AC/mois.%0A%0AMa%20boutique%20Shopify%20:%20%0A%0AMerci." class="btn btn-secondary" style="width:100%; justify-content:center; margin-top:auto;">
+              Souscrire — 1<sup>er</sup> mois offert
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+
+            <div class="pricing-deposit">
+              1<sup>er</sup> mois gratuit · 49€/mois ensuite · Engagement minimum 3 mois
+            </div>
           </div>
+
+          <!-- Offre 3 : Bundle Pilote + 3 mois Monitoring -->
+          <div class="pricing-card featured">
+            <div class="pricing-badge">Meilleure offre</div>
+            <div class="pricing-label">Bundle Pilote + Monitoring</div>
+            <div class="pricing-price">
+              <span class="amount">390</span>
+              <span class="currency">€</span>
+            </div>
+            <div class="pricing-old">Économie de 47€</div>
+
+            <ul class="pricing-includes">
+              <li>Tout ce qui est inclus dans le pilote</li>
+              <li>3 mois de monitoring CRO complet</li>
+              <li>3 tests A/B prioritaires (1/mois)</li>
+              <li>Reporting mensuel pendant 3 mois</li>
+              <li>Support prioritaire 3 mois</li>
+            </ul>
+
+            <a href="mailto:vyloria.business@gmail.com?subject=Bundle%20Pilote%20%2B%203%20mois%20Monitoring&body=Bonjour,%0A%0AJe%20souhaite%20r%C3%A9server%20le%20bundle%20pilote%20%2B%203%20mois%20monitoring%20%C3%A0%20390%E2%82%AC.%0A%0AMa%20boutique%20Shopify%20:%20%0AMon%20trafic%20mensuel%20:%20%0A%0AMerci." class="btn btn-primary" style="width:100%; justify-content:center; margin-top:auto;">
+              Réserver — 195€ d'acompte
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+
+            <div class="pricing-deposit">
+              Acompte 195€ · Solde 195€ à la livraison · Économie 47€ vs achat séparé
+            </div>
+          </div>
+
         </div>
 
         <div class="cta-meta">
