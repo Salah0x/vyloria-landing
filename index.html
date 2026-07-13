@@ -1296,6 +1296,53 @@
   </section>
 
   <!-- ===== CTA / CONTACT ===== -->
+  <section class="section" id="audit-tool">
+    <div class="container">
+      <div class="section-header fade-in">
+        <span class="eyebrow">Audit gratuit</span>
+        <h2>Auditez votre boutique Shopify en 10 secondes</h2>
+        <p>Entrez l'URL de votre page produit. L'audit est instantané, gratuit et sans engagement.</p>
+      </div>
+
+      <div class="audit-tool-container fade-in" style="max-width:640px;margin:0 auto;">
+        <div class="audit-input-row" style="display:flex;gap:12px;margin-bottom:24px;">
+          <input type="url" id="audit-url-input" placeholder="https://votre-boutique.fr/products/..." style="flex:1;padding:14px 18px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:15px;font-family:inherit;outline:none;" />
+          <button id="audit-btn" class="btn btn-primary" style="white-space:nowrap;">Auditer</button>
+        </div>
+
+        <div id="audit-results" style="display:none;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:32px;margin-bottom:24px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
+            <h3 style="margin:0;font-size:20px;">Résultats de l'audit</h3>
+            <div id="audit-score-badge" style="padding:6px 16px;border-radius:20px;font-size:14px;font-weight:600;"></div>
+          </div>
+          <div id="audit-items" style="display:flex;flex-direction:column;gap:16px;"></div>
+          <div style="margin-top:24px;padding:20px;background:var(--bg-elevated);border-radius:var(--radius);">
+            <p style="margin:0 0 12px;color:var(--text-secondary);font-size:14px;">Vous voulez le rapport complet avec les corrections proposées ?</p>
+            <a href="mailto:vyloria.business@gmail.com?subject=Audit%20CRO%20complet&body=Bonjour,%0A%0AJe%20souhaite%20recevoir%20le%20rapport%20d%27audit%20complet%20pour%20ma%20boutique.%0A%0AURL%20auditée%20:%20" class="btn btn-primary" style="width:100%;justify-content:center;">Recevoir le rapport complet gratuit</a>
+          </div>
+        </div>
+
+        <div id="audit-fallback" style="display:none;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:32px;">
+          <h3 style="margin:0 0 16px;font-size:20px;">L'audit automatique n'a pas pu s'exécuter</h3>
+          <p style="color:var(--text-secondary);margin:0 0 20px;">Certaines boutiques bloquent l'analyse automatique pour des raisons de sécurité. Pas de problème — entrez votre email et je vous envoie l'audit complet gratuit sous 24h.</p>
+          <form id="audit-email-form" style="display:flex;flex-direction:column;gap:12px;">
+            <input type="email" id="audit-email-input" placeholder="votre@email.com" required style="padding:14px 18px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:15px;font-family:inherit;outline:none;" />
+            <input type="hidden" id="audit-url-hidden" />
+            <button type="submit" class="btn btn-primary" style="justify-content:center;">Recevoir mon audit gratuit</button>
+          </form>
+          <div id="audit-form-success" style="display:none;padding:16px;background:var(--green-glow);border:1px solid var(--green);border-radius:var(--radius);color:var(--green);margin-top:16px;font-size:14px;">
+            ✓ Demande reçue. Vous recevrez votre audit sous 24h.
+          </div>
+        </div>
+
+        <div id="audit-loading" style="display:none;text-align:center;padding:40px;">
+          <div style="display:inline-block;width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+          <p style="margin-top:16px;color:var(--text-secondary);">Analyse en cours...</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="cta-section" id="contact">
     <div class="container">
       <div class="cta-content">
@@ -1445,6 +1492,122 @@
     document.querySelectorAll('.fade-in').forEach(el => {
       observer.observe(el);
     });
+
+    // ===== AUDIT TOOL =====
+    const auditBtn = document.getElementById('audit-btn');
+    const auditInput = document.getElementById('audit-url-input');
+    const auditResults = document.getElementById('audit-results');
+    const auditFallback = document.getElementById('audit-fallback');
+    const auditLoading = document.getElementById('audit-loading');
+    const auditItems = document.getElementById('audit-items');
+    const auditScoreBadge = document.getElementById('audit-score-badge');
+
+    function showLoading() {
+      auditResults.style.display = 'none';
+      auditFallback.style.display = 'none';
+      auditLoading.style.display = 'block';
+    }
+
+    function showResults(data) {
+      auditLoading.style.display = 'none';
+      auditResults.style.display = 'block';
+      auditItems.innerHTML = '';
+      
+      const score = data.score || 0;
+      const scoreColor = score >= 70 ? 'var(--green)' : score >= 40 ? 'var(--orange)' : 'var(--red)';
+      const scoreBg = score >= 70 ? 'var(--green-glow)' : score >= 40 ? 'rgba(245,158,11,0.1)' : 'var(--red-glow)';
+      auditScoreBadge.style.background = scoreBg;
+      auditScoreBadge.style.color = scoreColor;
+      auditScoreBadge.textContent = 'Score CRO: ' + score + '/100';
+
+      const items = [
+        { label: 'Images sans attribut alt', value: data.imagesWithoutAlt + '/' + data.totalImages + ' (' + data.altPct + '%)', status: data.altPct > 30 ? 'bad' : 'good' },
+        { label: 'Données structurées (schema.org)', value: data.hasSchema ? 'Présent (' + data.schemaBlocks + ' blocs)' : 'Absent', status: data.hasSchema ? 'good' : 'bad' },
+        { label: 'Boutique Shopify', value: data.isShopify ? 'Confirmée' : 'Non confirmée', status: data.isShopify ? 'good' : 'neutral' }
+      ];
+
+      items.forEach(item => {
+        const statusColor = item.status === 'bad' ? 'var(--red)' : item.status === 'good' ? 'var(--green)' : 'var(--text-muted)';
+        const statusBg = item.status === 'bad' ? 'var(--red-glow)' : item.status === 'good' ? 'var(--green-glow)' : 'transparent';
+        const div = document.createElement('div');
+        div.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:14px 16px;background:var(--bg-elevated);border-radius:var(--radius);border-left:3px solid ' + statusColor + ';';
+        div.innerHTML = '<span style="color:var(--text);font-size:14px;">' + item.label + '</span><span style="color:' + statusColor + ';font-size:14px;font-weight:600;">' + item.value + '</span>';
+        auditItems.appendChild(div);
+      });
+
+      // Update mailto link with the audited URL
+      const mailtoLink = auditResults.querySelector('a[href^="mailto:"]');
+      if (mailtoLink) {
+        const url = auditInput.value;
+        mailtoLink.href = 'mailto:vyloria.business@gmail.com?subject=Audit%20CRO%20complet&body=Bonjour,%0A%0AJe%20souhaite%20recevoir%20le%20rapport%20d%27audit%20complet%20pour%20ma%20boutique.%0A%0AURL%20auditée%20:%20' + encodeURIComponent(url);
+      }
+    }
+
+    function showFallback() {
+      auditLoading.style.display = 'none';
+      auditFallback.style.display = 'block';
+      document.getElementById('audit-url-hidden').value = auditInput.value;
+    }
+
+    auditBtn.addEventListener('click', async () => {
+      const url = auditInput.value.trim();
+      if (!url || !url.startsWith('http')) {
+        alert('Entrez une URL valide (https://...)');
+        return;
+      }
+      
+      showLoading();
+      
+      try {
+        const response = await fetch(url, { mode: 'cors', signal: AbortSignal.timeout(10000) });
+        const html = await response.text();
+        
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const imgs = doc.querySelectorAll('img');
+        const totalImages = imgs.length;
+        let imagesWithoutAlt = 0;
+        imgs.forEach(img => {
+          if (!img.hasAttribute('alt') || img.getAttribute('alt').trim() === '') {
+            imagesWithoutAlt++;
+          }
+        });
+        const altPct = totalImages > 0 ? Math.round(imagesWithoutAlt * 100 / totalImages) : 0;
+        const schemaScripts = doc.querySelectorAll('script[type="application/ld+json"]');
+        const hasSchema = schemaScripts.length > 0;
+        const isShopify = html.includes('cdn.shopify.com') || html.includes('Shopify.theme') || html.includes('shopify-section');
+        
+        let score = 100;
+        if (altPct > 50) score -= 30; else if (altPct > 30) score -= 20; else if (altPct > 10) score -= 10;
+        if (!hasSchema) score -= 20;
+        if (!isShopify) score -= 10;
+        score = Math.max(0, score);
+
+        showResults({ score, totalImages, imagesWithoutAlt, altPct, hasSchema, schemaBlocks: schemaScripts.length, isShopify });
+      } catch (err) {
+        showFallback();
+      }
+    });
+
+    auditInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') auditBtn.click();
+    });
+
+    // Email form submission
+    const emailForm = document.getElementById('audit-email-form');
+    if (emailForm) {
+      emailForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = document.getElementById('audit-email-input').value;
+        const url = document.getElementById('audit-url-hidden').value;
+        // Save locally (no backend)
+        let leads = JSON.parse(localStorage.getItem('audit_leads') || '[]');
+        leads.push({ email, url, date: new Date().toISOString() });
+        localStorage.setItem('audit_leads', JSON.stringify(leads));
+        document.getElementById('audit-form-success').style.display = 'block';
+        emailForm.style.display = 'none';
+      });
+    }
   </script>
 
 </body>
